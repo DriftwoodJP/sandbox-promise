@@ -2,12 +2,34 @@
 
 require('babel-polyfill');
 
-let str = 'console';
-if (str) {
-  let str = 'browser';
-  document.write(`Hello, ${str}!`);
+/**
+ * @param {String} value
+ * @return {Promise}
+ */
+function asyncProcess(value) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (value) {
+        resolve(`入力値： ${value}`);
+      } else {
+        reject('入力値は空です。');
+      }
+    }, 500);
+  });
 }
-console.log(`Hello, ${str}!`);
 
-import * as math from './lib/math.es6.js';
-console.log('2π = ' + math.sum(math.pi, math.pi));
+Promise.all([
+  asyncProcess('菊次郎'),
+  asyncProcess('さき'),
+  asyncProcess('たけし'),
+])
+.then(
+  (response) => {
+    console.log(response);
+  }
+)
+.catch(
+  (error) => {
+    console.error(`エラー： ${error}`);
+  }
+);
