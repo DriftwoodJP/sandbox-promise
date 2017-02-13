@@ -4,31 +4,44 @@ require('babel-polyfill');
 
 let el = document.getElementById('btn');
 el.addEventListener('click', function() {
-  getUserInfo('driftwoodjp');
+  main();
 });
+
+/**
+ * Main & console error.
+ */
+function main() {
+  getUserInfo('driftwoodjp')
+    .catch((error) => {
+      console.error(`エラーが発生しました (${error})`);
+    });
+}
 
 /**
  * Get User information from Github.
  * @param {String} userId
+ * @return {Promise}
  */
 function getUserInfo(userId) {
-  const request = new XMLHttpRequest();
-  request.open('GET', `https://api.github.com/users/${userId}`);
-  request.addEventListener('load', (event) => {
-    if (event.target.status !== 200) {
-      console.log(`${event.target.status}: ${event.target.statusText}`);
-      return;
-    }
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('GET', `https://api.github.com/users/${userId}`);
+    request.addEventListener('load', (event) => {
+      if (event.target.status !== 200) {
+        reject(new Error(`${event.target.status}: ${event.target.statusText}`));
+      }
 
-    const userInfo = JSON.parse(event.target.responseText);
+      const userInfo = JSON.parse(event.target.responseText);
 
-    const view = createView(userInfo);
-    displayView(view);
+      const view = createView(userInfo);
+      displayView(view);
+      resolve();
+    });
+    request.addEventListener('error', () => {
+      reject(new Error('Network Error'));
+    });
+    request.send();
   });
-  request.addEventListener('error', () => {
-    console.error('Network Error');
-  });
-  request.send();
 }
 
 /**
