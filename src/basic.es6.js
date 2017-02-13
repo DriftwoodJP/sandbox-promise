@@ -12,6 +12,8 @@ el.addEventListener('click', function() {
  */
 function main() {
   getUserInfo('driftwoodjp')
+    .then((userInfo) => createView(userInfo))
+    .then((view) => displayView(view))
     .catch((error) => {
       console.error(`エラーが発生しました (${error})`);
     });
@@ -32,10 +34,7 @@ function getUserInfo(userId) {
       }
 
       const userInfo = JSON.parse(event.target.responseText);
-
-      const view = createView(userInfo);
-      displayView(view);
-      resolve();
+      resolve(userInfo);
     });
     request.addEventListener('error', () => {
       reject(new Error('Network Error'));
