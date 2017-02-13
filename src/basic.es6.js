@@ -11,7 +11,8 @@ el.addEventListener('click', function() {
  * Main & console error.
  */
 function main() {
-  getUserInfo('driftwoodjp')
+  const userId = document.getElementById('userId').value;
+  getUserInfo(userId)
     .then((userInfo) => createView(userInfo))
     .then((view) => displayView(view))
     .catch((error) => {
